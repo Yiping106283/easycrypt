@@ -158,13 +158,21 @@ let t_failure_event_r (at_pos, cntr, ash, q, f_event, pred_specs, inv) tc =
   in
 
   (* Soundness side-condition: the per-step failure weight [ash] must be
-     non-negative over the WHOLE counter range [0, q).  The bound proven by
-     [fel] is the sum of [ash] over the full range, which must dominate the
-     sum over the counter values actually visited.  Without this obligation a
-     counter that jumps (skipping indices) combined with negative weights at
-     the skipped indices makes the full-range sum smaller than the visited
-     sum, which is unsound (e.g. weights (1, -1) with a 0 -> 2 jump would let
-     [fel] "prove" Pr[bad] <= 0). *)
+     non-negative over the WHOLE counter range [0, q).
+
+     The per-oracle obligation [not_F_to_F_goal] below only constrains
+     [ash i] at counter values [i] for which some state satisfies its
+     precondition (0 <= cntr < q, not F, the invariant and the oracle
+     predicate).  At any other [i] in [0, q) the phoare judgement is vacuous,
+     so a NEGATIVE weight [ash i] is accepted there; the proven bound is the
+     sum of [ash] over the full range, which then no longer dominates the sum
+     over the counter values actually visited.  A counter that jumps (skipping
+     indices) is one way to make an [i] unreachable (weights (1, -1) with a
+     0 -> 2 jump let [fel] "prove" Pr[bad] <= 0); an invariant excluding some
+     [i] is another (see tests/fel-unreachable-counter.ec).  Requiring
+     [0 <= ash i] on all of [0, q) closes every such instance: every term of
+     the full-range sum is then >= the (non-negative) probability mass it
+     accounts for. *)
   let nonneg_goal =
     let i_id = EcIdent.create "i" in
     let i    = f_local i_id tint in
