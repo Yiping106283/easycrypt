@@ -1,0 +1,145 @@
+diff -ru -x *.eco -x runtest_* -x report_* -x *.orig sha3/proof/SecureORO.eca sha3_p2/proof/SecureORO.eca
+--- sha3/proof/SecureORO.eca	2026-09-10 17:43:34
++++ sha3_p2/proof/SecureORO.eca	2026-09-10 18:10:11
+@@ -141,7 +141,7 @@
+       sp; if; auto; sp; inline*; sp; wp=> /=.
+       case: (x \in RO.m); wp => //=.
+       + by hoare; auto; smt(mu_bounded). 
+-      rnd (pred1 h); auto=> /> &h c H0 H1 H2 H3 H4 H5.
++      rnd (pred1 h); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto=> /> &h c H0 H1 H2 H3 H4 H5.
+       rewrite (sampleto_fu h witness) /= => ? ?.
+       rewrite rngE/= => [][] a; rewrite get_setE. 
+       case: (a=x{h}) => [->>|] //=.
+@@ -173,7 +173,7 @@
+     - hoare; auto; progress. 
+       rewrite H3/=; move: H1; rewrite rngE /= negb_exists /=.
+       by have:=H3; rewrite domE; smt().
+-    rnd (pred1 Preimage2.hash); auto=> /> &hr *.
++    rnd (pred1 Preimage2.hash); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto=> /> &hr *.
+     rewrite (sampleto_fu Preimage2.hash{hr} witness)/= => ??.
+     by rewrite get_setE /=; smt().
+   smt().
+@@ -335,7 +335,7 @@
+       rewrite remE; case: (SecondPreimage2.m2{h} = m1{h})=> //=.
+       by move: in_dom1 in_dom2; smt().
+     rcondt 5; 1: auto; wp. 
+-    rnd (pred1 (oget RO.m.[x3])); auto.
++    rnd (pred1 (oget RO.m.[x3])); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto.
+     move => /> &h d _ _ in_dom1 not_rng _ _ nin_dom2 sample2 _.
+     rewrite (sampleto_fu (oget RO.m{h}.[m1{h}]) witness) /= => _ sample1 _.
+     by rewrite get_set_sameE//=; smt().
+@@ -420,18 +420,18 @@
+       rewrite negb_exists /= => /(_ m2{h}).
+       by rewrite neq12 in_dom1 in_dom2 /=; smt().
+     - rcondf 3; 1: auto; rcondt 4; 1: auto; wp. 
+-      rnd (pred1 (oget RO.m.[x3])).
++      rnd (pred1 (oget RO.m.[x3])); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)).
+       auto=> /> &h d Hmc Hcb Hcoll _ _ neq12 in_dom1 in_dom2 _ _; split.
+       * smt(sampleto_fu).
+       by move=> _ sample _; rewrite get_set_sameE; smt().
+     - rcondt 3; 1: auto; rcondf 5; 1: (by auto; smt(mem_set)).
+-      swap 1; wp=> /=; rnd (pred1 (oget RO.m.[m2])); auto.
++      swap 1; wp=> /=; rnd (pred1 (oget RO.m.[m2])); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto.
+       move=> /> &h d _ _ Hcoll _ _ neq12 in_dom1 in_dom2 _ _; split.
+       * smt(sampleto_fu).
+       move=> _ sample _.
+       by rewrite get_set_sameE get_set_neqE 1:eq_sym.
+     rcondt 3; 1: auto; rcondt 5; 1: (by auto; smt(mem_set)).
+-    swap 2 -1; swap 1; wp=> //=; rnd (pred1 r); auto.
++    swap 2 -1; swap 1; wp=> //=; rnd (pred1 r); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto.
+     move=> /> &h d _ _ Hcoll _ _ neq12 in_dom1 in_dom2 sample1 _; split.
+     * smt(sampleto_fu).
+     move=> _ sample2 _.
+@@ -475,7 +475,7 @@
+       have:= Hcoll2; rewrite negb_exists /= => /(_ m1).
+       rewrite negb_exists /= => /(_ m2).
+       by rewrite neq in_dom1 in_dom2 /= => ->.
+-    rnd; skip=> /> &h bounder _ h _. 
++    rnd; 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); skip=> /> &h bounder _ h _. 
+     rewrite (mu_mem (frng RO.m{h}) sampleto (mu1 sampleto witness)); 1: smt(sampleto_fu).
+     rewrite StdOrder.RealOrder.ler_wpmul2r //. 
+     by rewrite le_fromint; smt(le_card_frng_fdom). 
+diff -ru -x *.eco -x runtest_* -x report_* -x *.orig sha3/proof/SecureRO.eca sha3_p2/proof/SecureRO.eca
+--- sha3/proof/SecureRO.eca	2026-09-10 17:43:34
++++ sha3_p2/proof/SecureRO.eca	2026-09-10 18:10:10
+@@ -141,7 +141,7 @@
+       if; last by hoare; auto; progress; smt(mu_bounded).
+       case: (x \in RO.m); wp => //=.
+       + by hoare; auto; smt(mu_bounded). 
+-      rnd (pred1 h); auto=> /> &h c ge0_c lt_c_bound h_notin_rngRO le_sRO_c le_c_bound Hcount x_notin_RO v _.
++      rnd (pred1 h); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto=> /> &h c ge0_c lt_c_bound h_notin_rngRO le_sRO_c le_c_bound Hcount x_notin_RO v _.
+       rewrite rngE=> /= - [] a; rewrite get_setE.
+       case: (a=x{h}) => [->>|] //=.
+       by move:h_notin_rngRO; rewrite rngE /= negb_exists/= => /(_ a) //=.
+@@ -360,6 +360,7 @@
+     move => /> &h d _ _ in_dom1 not_rng _ _ nin_dom2 sample2 _.
+     rewrite (sampleto_fu (oget RO.m{h}.[m1{h}]) witness) /= => sample1 _.
+     by rewrite get_set_sameE => ->.
++  by move=> &hr _; smt(ge0_mu1 mu_bounded).
+   smt().
+   qed.
+ 
+@@ -453,18 +454,18 @@
+       move: Hcoll; rewrite /collision negb_exists /= => /(_ m1{h}).
+       rewrite negb_exists /= => /(_ m2{h}).
+       by rewrite neq12 in_dom1 in_dom2 /=; smt().
+-    - rcondf 3; 1: auto; rcondt 6; 1: auto; wp; rnd (pred1 hash1).
++    - rcondf 3; 1: auto; rcondt 6; 1: auto; wp; rnd (pred1 hash1); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)).
+       auto=> /> &h d Hmc Hcb Hcoll _ _ neq12 in_dom1 in_dom2 _ _; split.
+       * smt(sampleto_fu).
+       by move=> _ sample _; rewrite get_set_sameE; smt().
+     - rcondt 3; 1: auto; rcondf 7; 1: (by auto; smt(mem_set)).
+-      swap 6 -5; wp=> /=; rnd (pred1 (oget RO.m.[m2])); auto.
++      swap 6 -5; wp=> /=; rnd (pred1 (oget RO.m.[m2])); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto.
+       move=> /> &h d _ _ Hcoll _ _ neq12 in_dom1 in_dom2 _ _; split.
+       * smt(sampleto_fu).
+       move=> _ sample _.
+       by rewrite get_set_sameE get_set_neqE 1:eq_sym.
+     rcondt 3; 1: auto; rcondt 7; 1: (by auto; smt(mem_set)).
+-    swap 2 -1; swap 6 -4; wp=> //=; rnd (pred1 r); auto.
++    swap 2 -1; swap 6 -4; wp=> //=; rnd (pred1 r); 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); auto.
+     move=> /> &h d _ _ Hcoll _ _ neq12 in_dom1 in_dom2 sample1 _; split.
+     * smt(sampleto_fu).
+     move=> _ sample2 _.
+@@ -509,7 +510,7 @@
+       have:= Hcoll2; rewrite negb_exists /= => /(_ m1).
+       rewrite negb_exists /= => /(_ m2).
+       by rewrite neq in_dom1 in_dom2 /= => ->.
+-    rnd; skip=> /> &h c0 bounder _ h _. 
++    rnd; 2:(by move=> ??; smt(ge0_mu1 mu_bounded)); skip=> /> &h c0 bounder _ h _. 
+     rewrite (mu_mem (frng RO.m{h}) sampleto (mu1 sampleto witness)); 1: smt(sampleto_fu).
+     rewrite StdOrder.RealOrder.ler_wpmul2r //. 
+     by rewrite le_fromint; smt(le_card_frng_fdom). 
+diff -ru -x *.eco -x runtest_* -x report_* -x *.orig sha3/proof/smart_counter/Gcol.eca sha3_p2/proof/smart_counter/Gcol.eca
+--- sha3/proof/smart_counter/Gcol.eca	2026-09-10 17:43:34
++++ sha3_p2/proof/smart_counter/Gcol.eca	2026-09-10 17:55:37
+@@ -208,7 +208,7 @@
+       by rewrite le_fromint;smt ml=0 w=max_ge0. 
+     + proc;sp;if;2:by hoare=>//??;apply eps_ge0.
+       wp.
+-      rnd (mem (image fst (frng FRO.m)));skip;progress;2:smt ml=0. 
++      rnd (mem (image fst (frng FRO.m)));2:(by move=> ??;apply eps_ge0);skip;progress;2:smt ml=0. 
+       have->:=(Mu_mem.mu_mem (image fst (frng FRO.m{hr})) cdistr (1%r/(2^c)%r) _).
+       + move=>x _; rewrite DCapacity.dunifin1E;do !congr;smt(@Capacity). 
+       apply ler_wpmul2r;2:by rewrite le_fromint.
+diff -ru -x *.eco -x runtest_* -x report_* -x *.orig sha3/proof/smart_counter/Gext.eca sha3_p2/proof/smart_counter/Gext.eca
+--- sha3/proof/smart_counter/Gext.eca	2026-09-10 17:43:34
++++ sha3_p2/proof/smart_counter/Gext.eca	2026-09-10 17:59:11
+@@ -558,7 +558,7 @@
+       apply ler_wpmul2r;1:by apply eps_ge0.
+       by rewrite le_fromint;smt ml=0 w=max_ge0. 
+     + proc;rcondt 2;1:by auto.
+-      wp; rnd (mem (image snd (fdom G1.m `|` fdom G1.mi ))); skip=> /> &hr h1 h2 h3 h4 h5.
++      wp; rnd (mem (image snd (fdom G1.m `|` fdom G1.mi ))); 2:(by move=> ??; apply eps_ge0); skip=> /> &hr h1 h2 h3 h4 h5.
+       rewrite (Mu_mem.mu_mem 
+                    (image snd (fdom G1.m{hr} `|` fdom G1.mi{hr}))
+                    cdistr (1%r/(2^c)%r))//.
+@@ -570,7 +570,7 @@
+     + by move=>c1;proc;auto=> &hr [^H 2->]/#. 
+     + by move=> b1 c1;proc;auto=> /#.
+     + proc;rcondt 2;1:by auto.
+-      wp;rnd (mem (image snd (fdom G1.m `|` fdom G1.mi) `|` fset1 x));skip=> /> &hr ?????.
++      wp;rnd (mem (image snd (fdom G1.m `|` fdom G1.mi) `|` fset1 x));2:(by move=> ??;apply eps_ge0);skip=> /> &hr ?????.
+       rewrite (Mu_mem.mu_mem (image snd (fdom G1.m{hr}`|`fdom G1.mi{hr}) `|` fset1 x{hr}) cdistr (1%r/(2^c)%r))//.
+       + by move=>x _;rewrite DCapacity.dunifin1E capacity_card.
+       rewrite ler_wpmul2r;1:by apply divr_ge0=>//;apply /c_ge0r. 

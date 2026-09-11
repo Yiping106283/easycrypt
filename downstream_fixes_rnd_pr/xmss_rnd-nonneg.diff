@@ -1,0 +1,30 @@
+diff -ru -x *.eco -x runtest_* -x report_* -x *.orig -x *.log xmss-security/proof/security/EUFRMA_Interactive_Equiv.ec xmss_p2/proof/security/EUFRMA_Interactive_Equiv.ec
+--- xmss-security/proof/security/EUFRMA_Interactive_Equiv.ec	2026-09-10 17:43:33
++++ xmss_p2/proof/security/EUFRMA_Interactive_Equiv.ec	2026-09-10 18:03:31
+@@ -785,6 +785,7 @@
+   + inline *; rcondt 1; 1:by auto=> /#.
+     wp; rnd (pred1 m'); auto=> />.
+     by move=> &0 _ _ _; exact: p.
++    by move=> &0 *; move: (p witness); smt(ge0_mu).
+   + by conseq ih.
+   + smt().
+ by sp; hoare=> /=; conseq (: true)=> //.
+diff -ru -x *.eco -x runtest_* -x report_* -x *.orig -x *.log xmss-security/proof/security/Reprogramming.ec xmss_p2/proof/security/Reprogramming.ec
+--- xmss-security/proof/security/Reprogramming.ec	2026-09-10 17:43:33
++++ xmss_p2/proof/security/Reprogramming.ec	2026-09-10 18:09:24
+@@ -620,6 +620,7 @@
+     apply: Mu_mem.mu_mem_le_fsize.
+     + by move=> x hx /=; apply: ler_trans hmax; apply: (p_maxE p{hr} x).
+     by apply ler_wpmul2r; smt(p_max_ge0). 
++  + by move=> &hr />; smt(ge0_queryctr p_max_ge0).
+   by rcondt ^if; auto; conseq (: false).
+ + move=> c;proc.
+   rcondt ^if; 1: by auto.
+@@ -655,6 +656,7 @@
+     apply: Mu_mem.mu_mem_le_fsize.
+     + by move=> x hx /=; apply: ler_trans hmax; apply (p_maxE p{hr} x).
+     by apply ler_wpmul2r; smt(p_max_ge0). 
++  + by move=> &hr />; smt(ge0_queryctr p_max_ge0).
+   by rcondt ^if; auto; conseq (: false).
+ + move=> c;proc.
+   rcondt ^if; 1: by auto.

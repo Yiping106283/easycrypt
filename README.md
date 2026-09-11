@@ -7,3 +7,8 @@ downstream_fixes/  one unified diff per CI external project (sha3 `next`, crypto
                    on unpatched main.
 repro/             the #1102 and #1119 reproducers as filed; both still compile (prove `false`)
                    with the #1105 binary.
+
+downstream_fixes_rnd_pr/  the script changes the same three projects need for the per-tactic `rnd`
+                   fix (extra goal `pre => 0%r <= bd`, PR for issue #1119): cryptobox 2 sites, sha3 16 sites,
+                   xmss-security 3 sites. Verified: each project's CI scenario passes with that patch modulo the
+                   same baseline SMT failures. sphincsplus and xsalsa20 need nothing.
