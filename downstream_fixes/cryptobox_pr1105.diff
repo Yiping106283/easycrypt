@@ -1,0 +1,53 @@
+diff --git a/PKEY.ec b/PKEY.ec
+index 388e523..88ab4e1 100644
+--- a/PKEY.ec
++++ b/PKEY.ec
+@@ -355,7 +355,7 @@ seq 2: (PKEYb.skm.[pk] = Some Corrupt)
+ + by auto.
+ + exists * PKEYb.skm; elim * => hm.
+   conseq (: _ ==> _: ((card (fdom (filter (fun _=> pred1 Corrupt) hm)))%r * pr_guess))=> //=.
+-  + by move=> &0 /> _; smt(ge0_pr_guess le_fromint).
++  + by move=> &0 />; smt(ge0_pr_guess ge0_q_csetpk_max ge0_q_gen_max le_fromint).
+   rnd (fun (x : _ * _)=> x.`1 \in (fdom (filter (fun _=> pred1 Corrupt) hm))); auto.
+   move=> /> &0 _ card_le_qcsetpk; split=> [|_].
+   + rewrite -/((\o) (mem (fdom (filter (fun _ => pred1 Corrupt) hm))) fst) -dmapE.
+@@ -385,11 +385,12 @@ fel 6 Bound.q_gen
+   + by apply/fmap_eqP=> pk; rewrite filterE emptyE.
+   rewrite fdom0 fcards0.
+   smt(ge0_q_gen_max ge0_q_csetpk_max).
+++ by exfalso; smt(ge0_q_csetpk_max ge0_q_gen_max ge0_pr_guess).
+ + move=> bad c_gen; proc; if; inline *; auto=> />.
+   move=> &0 _ _ cardB gt_b_csetpk; split=> _=> [|/#].
+   split=> [/#|].
+   by rewrite filter_set {1}/pred1 /= fdom_set fcardU fcard1 #smt:(fcard_ge0).
+-+ proc; sp; if; auto.
+++ proc; sp; if; auto; last by smt(ge0_q_csetpk_max ge0_q_gen_max ge0_pr_guess).
+   by call gen_bad; auto=> /#.
+ + move=> c_gen; proc; sp; if; inline *; auto.
+   move=> /> &0 gt_c_b_gen _ ge_c_b_csetpk ge_card [] pk sk _; split=> /= _=> [|/#].
+@@ -777,7 +778,7 @@ seq 2: (is_honest PKEYb.skm.[pk])
+ + by auto.
+ + exists * PKEYb.skm; elim * => skm.
+   conseq (: _ ==> _: ((card (fdom (filter (fun _ x=> exists sk, x = Honest sk) skm)))%r * pr_guess))=> //=.
+-  + by move=> &0 /> _; smt(ge0_pr_guess le_fromint).
++  + by move=> &0 />; smt(ge0_pr_guess ge0_q_csetpk_max ge0_q_gen_max le_fromint).
+   rnd (fun (x : _ * _)=> x.`1 \in (fdom (filter (fun _ x=> exists sk, x = Honest sk) skm))); auto.
+   move=> /> &0 _ card_le_qcsetpk; split=> [|_].
+   + rewrite -/((\o) (mem (fdom (filter (fun _ x=> exists sk, x = Honest sk) skm))) fst) -dmapE.
+@@ -806,7 +807,7 @@ fel 6 Bound.q_gen
+   + by apply/fmap_eqP=> pk; rewrite filterE emptyE.
+   rewrite fdom0 fcards0.
+   smt(ge0_q_gen_max ge0_q_csetpk_max).
+-+ proc; sp; if; auto.
+++ proc; sp; if; auto; last by smt(ge0_q_csetpk_max ge0_q_gen_max ge0_pr_guess).
+   by call gen_bad; auto=> /#.
+ + move=> c_gen; proc; sp; if; inline *; auto=> />.
+   auto=> /> &0 c_lt_q _ ge_card [] pk sk _; split=> [//|/#].
+@@ -816,6 +817,7 @@ fel 6 Bound.q_gen
+ + move=> bad c_gen; proc.
+   rcondf 2; first by auto=> /#.
+   by auto.
+++ by exfalso; smt(ge0_q_csetpk_max ge0_q_gen_max ge0_pr_guess).
+ move=> bad c_gen; proc; auto=> /> &0 c_le_q card_le_c pk_notin_skm.
+ by rewrite filter_set {1}/pred1 /= fdom_rem fcardD #smt:(fcard_ge0).
+ qed.

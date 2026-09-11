@@ -1,0 +1,48 @@
+diff --git a/proofs/OpenPRE_From_TCR_DSPR_THF.eca b/proofs/OpenPRE_From_TCR_DSPR_THF.eca
+index 0a66d86..c9bfb86 100644
+--- a/proofs/OpenPRE_From_TCR_DSPR_THF.eca
++++ b/proofs/OpenPRE_From_TCR_DSPR_THF.eca
+@@ -1285,7 +1285,7 @@ seq 1 :
+    /\ (0 <= res.`3 && res.`3 < res.`4) 
+    /\ (0 <= res.`4 && res.`4 <= t) /\ !res.`5 /\ res.`6 
+    /\ f res.`1 res.`7 OPREg.x' = res.`8) => //.
+-  rewrite /prsi; bypr => //= &m' [eqglob [-> ->]].
++  rewrite /prsi; bypr => //= &m'; rewrite Pr[mu_ge0] /= => -[eqglob [-> ->]].
+   by rewrite eq_sym; apply (PrSiis_Siisa_sub _ii _jj  &m &m' _) => /#.
+ 
+ + rnd (fun x => x <>  OPREg.x').
+diff --git a/proofs/PRE_From_SPR_DSPR.ec b/proofs/PRE_From_SPR_DSPR.ec
+index 1394e0a..338d8f1 100644
+--- a/proofs/PRE_From_SPR_DSPR.ec
++++ b/proofs/PRE_From_SPR_DSPR.ec
+@@ -634,7 +634,7 @@ seq 1 : r prsi j1dj _ 0%r
+   rnd; rnd.
+   by wp; skip.
+ + call (_ : (glob A) = (glob A){m} /\ arg = j ==> res) => //.
+-  rewrite /prsi; bypr => //= &m' [eq_glob ->].
++  rewrite /prsi; bypr => //= &m'; rewrite Pr[mu_ge0] /= => -[eq_glob ->].
+   byequiv=> //=; symmetry.
+   transitivity Si_inverse_sample_alt.orig_ss (={glob A, arg} ==> ={res}) 
+                                              (={glob A, arg} ==> ={res}) => //=.
+diff --git a/proofs/WOTS_TW_ES.ec b/proofs/WOTS_TW_ES.ec
+index ab07624..0d42f58 100644
+--- a/proofs/WOTS_TW_ES.ec
++++ b/proofs/WOTS_TW_ES.ec
+@@ -5510,7 +5510,7 @@ have ->:
+     * by rnd.
+     * by rnd; skip.
+     * call (: (glob A) = (glob A){m} /\ b = false /\ i = j ==> res) => //.
+-      rewrite /pr; bypr => |> &m' eq_glob -> ->.
++      rewrite /pr; bypr => &m'; rewrite Pr[mu_ge0] /=; move => |> eq_glob ->.
+       byequiv (: ={glob A, b, i} ==> _) => //.
+       by proc; sim.
+     * hoare; call (: true) => //; skip => /#.
+@@ -5524,7 +5524,7 @@ have ->:
+     - by rnd.
+     - by rnd; skip.
+     - call (: (glob A) = (glob A){m} /\ b = true /\ i = j ==> res) => //.
+-      rewrite /pr; bypr => |> &m' eq_glob -> ->.
++      rewrite /pr; bypr => &m'; rewrite Pr[mu_ge0] /=; move => |> eq_glob ->.
+       byequiv (: ={glob A, b, i} ==> _) => //.
+       by proc; sim.
+     - hoare; call (: true) => //; skip => /#.
