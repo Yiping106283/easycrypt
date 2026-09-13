@@ -1,6 +1,6 @@
-From 19e476fdac21f00a8ed65fedde6d4bd1d2b41062 Mon Sep 17 00:00:00 2001
-From: Yiping Ma <shannonprover@gmail.com>
-Date: Sat, 12 Sep 2026 17:44:40 -0700
+From bfb5a49549056da401d0007ab102c8abbfdd51b2 Mon Sep 17 00:00:00 2001
+From: Yiping Ma <yipingma@berkeley.edu>
+Date: Sat, 12 Sep 2026 17:47:24 -0700
 Subject: [PATCH] [chore] adapt to non-negative phoare bounds (EasyCrypt#1105)
 
 EasyCrypt PR #1105 (`negative-phoare-false`) makes `conseq`, `bypr` and
