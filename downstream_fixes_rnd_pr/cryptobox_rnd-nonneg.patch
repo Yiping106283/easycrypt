@@ -1,0 +1,40 @@
+From 9cfc5cdb488add4868fd899409c7cbba89a003c8 Mon Sep 17 00:00:00 2001
+From: Yiping Ma <yipingma@berkeley.edu>
+Date: Thu, 24 Sep 2026 17:59:49 -0700
+Subject: [PATCH] [chore] adapt to non-negative bound goal of pHL rnd
+ (EasyCrypt#1135)
+
+EasyCrypt#1135 makes the pHL `rnd` tactic (upper-bound form) emit an extra
+last goal `forall &hr, 0%r <= bd`, closed automatically only when trivial.
+In the two `gen_bad` lemmas of PKEY.ec the bound `card (fdom (filter ...))%r
+* pr_guess` is not, so after `rnd ...; auto` that goal is now discharged with
+`smt(ge0_pr_guess fcard_ge0)` before the last `seq` branch is closed by `hoare`.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+---
+ PKEY.ec | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/PKEY.ec b/PKEY.ec
+index 41293d7..343e8e0 100644
+--- a/PKEY.ec
++++ b/PKEY.ec
+@@ -363,6 +363,7 @@ seq 2: (PKEYb.skm.[pk] = Some Corrupt)
+     by move=> pk _; rewrite dmap1E dkp_max.
+   move=> [] pk sk /= _.
+   by rewrite mem_fdom domE filterE=> ->.
++  by move=> &hr; smt(ge0_pr_guess fcard_ge0).
+ by hoare; auto=> />.
+ qed.
+ 
+@@ -786,6 +787,7 @@ seq 2: (is_honest PKEYb.skm.[pk])
+     by move=> pk _; rewrite dmap1E dkp_max.
+   move=> [] pk sk /= _.
+   by rewrite mem_fdom domE filterE /is_honest; case: skm.[pk]=> [|[]] /#.
++  by move=> &hr; smt(ge0_pr_guess fcard_ge0).
+ by hoare; auto=> /#.
+ qed.
+ 
+-- 
+2.50.1 (Apple Git-155)
+
